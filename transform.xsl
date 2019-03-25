@@ -2,19 +2,45 @@
 <xsl:stylesheet version="1.0"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0"
-                xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0" >
+                xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0" 
+                xmlns:xlink="http://www.w3.org/1999/xlink" >
     <xsl:output method="text"/>
     <xsl:template match="/">
-    Hi there!
-        <xsl:apply-templates select="office:document-content/office:body" />
-    All done
+        <xsl:apply-templates select="office:document-content/office:body/office:text" />
    </xsl:template>
 
 <xsl:template match="text:p[@text:style-name='P17']">
+<!-- Traps heading 1 -->
     <xsl:variable name="underline" select="." />
     <xsl:value-of select="."/>
     <xsl:value-of select="translate($underline,'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz -','=========================================================')"/>
 </xsl:template>
+
+<xsl:template match="text:p[@text:style-name='Heading_20_1']">
+<!-- Traps heading 2 -->
+    <xsl:variable name="underline" select="." />
+    <xsl:value-of select="."/>
+    <xsl:value-of select="translate($underline,'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz -','---------------------------------------------------------')"/>
+</xsl:template>
+
+<xsl:template match="text:span[@text:style-name='T1']">
+<!-- Traps body text -->
+    <xsl:value-of select="."/>
+</xsl:template>
+
+<xsl:template match="text:a[@xlink:type='simple']">
+<!-- Creates an rSt hyperlink `Label <url>`_ 
+     &#96; is a backtick
+     &lt; is bracket-open
+     &gt; is bracket-close
+-->
+     <xsl:value-of select="concat('&#96;',text:span,' &lt;',@xlink:href,'&gt;&#96;_')"/>
+</xsl:template>
+
+
+<!-- Nodes to ignore -->
+<xsl:template match="text:sequence-decls|text:bookmark|text:p[@text:style-name='P1']" />
+
 
 </xsl:stylesheet>
 

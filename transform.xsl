@@ -3,6 +3,7 @@
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0"
                 xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0" 
+                xmlns:draw="urn:oasis:names:tc:opendocument:xmlns:drawing:1.0"
                 xmlns:xlink="http://www.w3.org/1999/xlink" >
     <xsl:output method="text" />
     <xsl:template match="/">
@@ -53,9 +54,10 @@
 
 
 <!-- Nodes to ignore -->
-<xsl:template match="text:sequence-decls|text:bookmark|text:p[@text:style-name='P1']" />
+<xsl:template match="text:sequence-decls|text:bookmark|text:p[@text:style-name='P1']|draw:frame|text:line-break|text:tab" />
 
-<xsl:template match="text()"/>
+<!-- Suppresses newline after each node. -->
+<xsl:template match="text()" />
 
 <xsl:template name="newline">
     <xsl:text>&#xA;&#xA;</xsl:text>

@@ -5,6 +5,7 @@
                 xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0" 
                 xmlns:draw="urn:oasis:names:tc:opendocument:xmlns:drawing:1.0"
                 xmlns:style="urn:oasis:names:tc:opendocument:xmlns:style:1.0" 
+                xmlns:fo="urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0" 
                 xmlns:xlink="http://www.w3.org/1999/xlink" >
     <xsl:output method="text" />
 
@@ -22,7 +23,7 @@
     <xsl:variable name="underline" select="." />
     <xsl:value-of select="."/>
     <xsl:value-of select="translate($underline,'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz -','=========================================================')"/>
-    <xsl:call-template name="newline" />
+    <xsl:call-template name="twoNewlines" />
 </xsl:template>
 
 <xsl:template match="text:p[@text:style-name='Heading_20_1']">
@@ -30,7 +31,7 @@
     <xsl:variable name="underline" select="." />
     <xsl:value-of select="."/>
     <xsl:value-of select="translate($underline,'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz -','---------------------------------------------------------')"/>
-    <xsl:call-template name="newline" />
+    <xsl:call-template name="twoNewlines" />
 </xsl:template>
 
 <xsl:template match="text:p[@text:style-name='Heading_20_2']">
@@ -74,15 +75,18 @@
 
 
 <!-- Nodes to ignore -->
-<xsl:template match="text:sequence-decls|text:bookmark|text:p[@text:style-name='P1']|draw:frame|text:line-break|text:tab" />
+<xsl:template match="text:sequence-decls|text:bookmark|draw:frame|draw:image|text:line-break|text:tab" />
 
 <!-- Suppresses newline after each node. -->
 <xsl:template match="text()" />
 
-<xsl:template name="newline">
-    <xsl:text>&#xA;&#xA;</xsl:text>
+<xsl:template name="oneNewline">
+    <xsl:text>&#xA;</xsl:text>
 </xsl:template>
 
+<xsl:template name="twoNewlines">
+    <xsl:text>&#xA;&#xA;</xsl:text>
+</xsl:template>
 
 </xsl:stylesheet>
 

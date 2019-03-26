@@ -26,6 +26,11 @@
     <xsl:call-template name="newline" />
 </xsl:template>
 
+<xsl:template match="text:list-item">
+    <xsl:text>#. </xsl:text> 
+<xsl:apply-templates />
+</xsl:template>
+
 <xsl:template match="text:p">
 <!-- Traps body paragraph -->
     <xsl:apply-templates />

@@ -33,6 +33,14 @@
     <xsl:call-template name="newline" />
 </xsl:template>
 
+<xsl:template match="text:p[@text:style-name='Heading_20_2']">
+<!-- Traps heading 3 -->
+    <xsl:variable name="underline" select="." />
+    <xsl:value-of select="."/>
+    <xsl:value-of select="translate($underline,'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz -','~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')"/>
+    <xsl:call-template name="newline" />
+</xsl:template>
+
 <xsl:template match="text:list-item">
     <xsl:text>#. </xsl:text> 
 <xsl:apply-templates />

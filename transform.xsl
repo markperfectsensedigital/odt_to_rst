@@ -4,7 +4,7 @@
                 xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0"
                 xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0" 
                 xmlns:xlink="http://www.w3.org/1999/xlink" >
-    <xsl:output method="text"/>
+    <xsl:output method="text" />
     <xsl:template match="/">
         <xsl:apply-templates select="office:document-content/office:body/office:text" />
    </xsl:template>
@@ -14,6 +14,7 @@
     <xsl:variable name="underline" select="." />
     <xsl:value-of select="."/>
     <xsl:value-of select="translate($underline,'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz -','=========================================================')"/>
+    <xsl:call-template name="newline" />
 </xsl:template>
 
 <xsl:template match="text:p[@text:style-name='Heading_20_1']">
@@ -21,6 +22,13 @@
     <xsl:variable name="underline" select="." />
     <xsl:value-of select="."/>
     <xsl:value-of select="translate($underline,'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz -','---------------------------------------------------------')"/>
+    <xsl:call-template name="newline" />
+</xsl:template>
+
+<xsl:template match="text:p">
+<!-- Traps body paragraph -->
+    <xsl:apply-templates />
+    <xsl:call-template name="newline" />
 </xsl:template>
 
 <xsl:template match="text:span[@text:style-name='T1']">
@@ -40,6 +48,12 @@
 
 <!-- Nodes to ignore -->
 <xsl:template match="text:sequence-decls|text:bookmark|text:p[@text:style-name='P1']" />
+
+<xsl:template match="text()"/>
+
+<xsl:template name="newline">
+    <xsl:text>&#xA;&#xA;</xsl:text>
+</xsl:template>
 
 
 </xsl:stylesheet>

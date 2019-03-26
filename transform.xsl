@@ -4,13 +4,20 @@
                 xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0"
                 xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0" 
                 xmlns:draw="urn:oasis:names:tc:opendocument:xmlns:drawing:1.0"
+                xmlns:style="urn:oasis:names:tc:opendocument:xmlns:style:1.0" 
                 xmlns:xlink="http://www.w3.org/1999/xlink" >
     <xsl:output method="text" />
+
+    <!-- Find the title style -->
+    <xsl:variable name="titleStyle">
+        <xsl:value-of select="descendant::style:style[@style:parent-style-name='Title']/@style:name" />
+    </xsl:variable>
+
     <xsl:template match="/">
         <xsl:apply-templates select="office:document-content/office:body/office:text" />
    </xsl:template>
 
-<xsl:template match="text:p[@text:style-name='P17']">
+<xsl:template match="text:p[@text:style-name=$titleStyle]">
 <!-- Traps heading 1 -->
     <xsl:variable name="underline" select="." />
     <xsl:value-of select="."/>

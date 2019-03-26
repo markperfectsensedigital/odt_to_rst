@@ -31,7 +31,13 @@
     <xsl:call-template name="newline" />
 </xsl:template>
 
-<xsl:template match="text:span[@text:style-name='T1']">
+
+<!-- Traps boldface -->
+<xsl:template match="text:span[@text:style-name='T12' or @text:style-name='T9' or @text:style-name='T2']">
+  <xsl:value-of select="concat('**',.,'**')" />
+</xsl:template>
+
+<xsl:template match="text:span">
 <!-- Traps body text -->
     <xsl:value-of select="."/>
 </xsl:template>

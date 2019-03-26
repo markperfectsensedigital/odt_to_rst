@@ -39,29 +39,65 @@
     <xsl:variable name="underline" select="." />
     <xsl:value-of select="."/>
     <xsl:value-of select="translate($underline,'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz -','~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')"/>
-    <xsl:call-template name="newline" />
+    <xsl:call-template name="twoNewlines" />
 </xsl:template>
 
-<xsl:template match="text:list-item">
-    <xsl:text>#. </xsl:text> 
-<xsl:apply-templates />
+<xsl:template match="text:p[@text:style-name='Heading_20_3']">
+<!-- Traps heading 3 -->
+    <xsl:variable name="underline" select="." />
+    <xsl:value-of select="."/>
+    <xsl:value-of select="translate($underline,'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz -','^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^')"/>
+    <xsl:call-template name="twoNewlines" />
+</xsl:template>
+
+<xsl:template match="text:list">
+   <xsl:call-template name="oneNewline" />
+    <xsl:apply-templates />
+    <xsl:call-template name="oneNewline" />
 </xsl:template>
 
 <xsl:template match="text:p">
 <!-- Traps body paragraph -->
-    <xsl:apply-templates />
-    <xsl:call-template name="newline" />
-</xsl:template>
-
-
-<!-- Traps boldface -->
-<xsl:template match="text:span[@text:style-name='T12' or @text:style-name='T9' or @text:style-name='T2']">
-  <xsl:value-of select="concat('**',.,'**')" />
+    <xsl:if test=". != '' or node()">
+        <xsl:choose>
+            <xsl:when test="../name() = 'text:list-item'">
+            <!-- 
+                If the current paragraph is part of a list, then compute the number of spaces to indent
+                the list. The number of spaces is a function of the associaed style's fo:margin-left value.
+                There are three spaces for each multiple of 0.5 inches of indent.
+            -->
+                 <xsl:variable name="styleName" select="@text:style-name" />
+                <xsl:variable name="marginLeft" select="/descendant::style:style[@style:name = $styleName]/style:paragraph-properties/@fo:margin-left" />
+                <xsl:variable name="numberSpaces" select= "((number(substring-before($marginLeft,'in')) div 0.5) - 1) * 3" />
+                <xsl:value-of select="concat(substring('                  ',1,$numberSpaces), '#. ')"/>
+                <xsl:apply-templates />    
+               <xsl:call-template name="oneNewline" />
+            </xsl:when>
+            <xsl:otherwise>
+            <!--
+                Here we are at a paragraph that is not part of a list.
+            -->
+              <xsl:apply-templates />
+              <xsl:call-template name="twoNewlines" />
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:if>
 </xsl:template>
 
 <xsl:template match="text:span">
-<!-- Traps body text -->
-    <xsl:value-of select="."/>
+    <!--xsl:value-of select="concat('Value for string is',.)" />
+    <xsl:value-of select="concat('Length of  string is ',string-length(.))" /-->
+    <xsl:if test=". != ''">
+    <xsl:variable name="spanstyle" select="@text:style-name" />
+    <xsl:choose>
+        <xsl:when test="/descendant::style:style[@style:name = $spanstyle]/style:text-properties[@fo:font-weight='bold']">
+            <xsl:value-of select="concat('**',.,'**')" />
+        </xsl:when>
+        <xsl:otherwise>
+            <xsl:value-of select="."/>
+        </xsl:otherwise>
+    </xsl:choose>    
+    </xsl:if>
 </xsl:template>
 
 <xsl:template match="text:a[@xlink:type='simple']">

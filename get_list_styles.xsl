@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!--  saxon -s:source.xml  -xsl:stylesheet.xsl -o:output.rst -->
-<!--  saxon  -s:/tmp/barf/content.xml  -xsl:transform.xsl -->
+<!--  saxon -s:styles.xml -xsl:get_list_styles.xsl -o:numberedlists.txt 
+
+Creates a one-line file with all of the list styles that are numbered, not bulleted.
+
+Pass the contents of numberedlists.txt to transform.xsl
+
+-->
+
 
 <xsl:stylesheet version="1.0"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"

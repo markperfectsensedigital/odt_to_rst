@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!--  saxon -s:source.xml  -xsl:stylesheet.xsl -o:output.rst -->
+<!--  saxon -s:source.xml  -xsl:stylesheet.xsl -o:output.rst numberedlists=`cat numberedlists.txt` -->
 <!--  saxon  -s:/tmp/barf/content.xml  -xsl:transform.xsl -->
 
 <xsl:stylesheet version="1.0"
@@ -14,7 +14,8 @@
     <xsl:output method="text" />
     <xsl:strip-space elements="*" />
 
- 
+    <xsl:param name="numberedlists" />
+
     <!-- Find the title style -->
     <xsl:variable name="titleStyle">
         <xsl:value-of select="descendant::style:style[@style:parent-style-name='Title']/@style:name" />
@@ -82,7 +83,15 @@
                  <xsl:variable name="styleName" select="@text:style-name" />
                 <xsl:variable name="marginLeft" select="/descendant::style:style[@style:name = $styleName]/style:paragraph-properties/@fo:margin-left" />
                 <xsl:variable name="numberSpaces" select= "((number(substring-before($marginLeft,'in')) div 0.5) - 1) * 3" />
-                <xsl:value-of select="concat(substring('                  ',1,$numberSpaces), '#. ')"/>
+                <xsl:choose>
+                    <xsl:when test="contains($numberedlists,ancestor::text:list[1]/@text:style-name)">
+                        <xsl:value-of select="concat(substring('                  ',1,$numberSpaces), '#. ')"/>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:value-of select="concat(substring('                  ',1,$numberSpaces), '* ')"/>
+                    </xsl:otherwise>
+                </xsl:choose>
+
                 <xsl:apply-templates />  
                <xsl:call-template name="oneNewline" />
             </xsl:when>

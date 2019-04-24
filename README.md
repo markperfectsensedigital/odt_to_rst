@@ -1,4 +1,9 @@
-This transform was written for the Saxon formatter. At the command line:
+This transform converts from LibreOffice Writer (odt) files to restructuredText (rST) files.
 
-1. Extract `content.xml` from your `.odt` file.
-1. Run `saxon  -s:content.xml  -xsl:transform.xsl -o:filename.rst`.
+# Usage
+
+1. Clone this repo into a directory.
+1. In that same directory, 
+`./convertit Usage: convertit.sh path_to_writer_file.odt`
+
+The output is in `/tmp/output.rst`.
